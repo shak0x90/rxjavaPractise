@@ -1,6 +1,5 @@
 package com.example.rxjavapractise
 
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -11,10 +10,9 @@ import com.example.rxjavapractise.databinding.ActivityMainBinding
 import com.example.rxjavapractise.datamodel.albumResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.Retrofit
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -29,25 +27,29 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = adapter
         }
-            var compositeDisposable = CompositeDisposable()
-            compositeDisposable.add(getObserable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe({response -> getObserser(response as ArrayList<albumResponse>)},{t -> onfailure(t)})
-            )
+        val compositeDisposable = CompositeDisposable()
+        compositeDisposable.add(
+            getObserable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response -> getObserser(response as ArrayList<albumResponse>) },
+                    { t -> onfailure(t) })
+        )
 
     }
+
     private fun getObserable(): Observable<List<albumResponse>> {
-            return RetrofiltRequset.api.getalbum()
+        return RetrofiltRequset.api.getalbum()
 
     }
-    private fun getObserser(albumList:ArrayList<albumResponse>){
-        if (albumList!=null && albumList.size>0){
+
+    private fun getObserser(albumList: ArrayList<albumResponse>) {
+        if (albumList.size > 0) {
             adapter.setData(albumList)
         }
 
 
     }
 
-    private fun onfailure(t:Throwable) {
-        Toast.makeText(applicationContext, "$t",Toast.LENGTH_SHORT)
+    private fun onfailure(t: Throwable) {
+        Toast.makeText(applicationContext, "$t", Toast.LENGTH_SHORT).show()
     }
 }
