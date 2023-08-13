@@ -1,0 +1,3 @@
+# rxjavaPractise
+Just a simple Api call with using rxjava
+....
